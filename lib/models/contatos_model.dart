@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class ContatosModel {
   List<Contatos> contatos = [];
 
@@ -11,6 +9,8 @@ class ContatosModel {
       json['results'].forEach((v) {
         contatos.add(Contatos.fromJson(v));
       });
+    } else {
+      contatos.add(Contatos.fromJson(json));
     }
   }
 
