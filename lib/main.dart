@@ -1,21 +1,14 @@
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:lista_contatos/http/http_client.dart';
+import 'package:lista_contatos/pages/adicionar_contatos.dart';
 import 'package:lista_contatos/repositories/contatos_repository.dart';
 import 'package:lista_contatos/store/contatos_store.dart';
-import 'dart:math';
+
+import 'pages/detalhes_contatos.dart';
 
 void main() {
   runApp(const MyApp());
-}
-
-Color getRandomColor() {
-  final random = Random();
-  final alfa = random.nextInt(255);
-  final red = random.nextInt(256);
-  final green = random.nextInt(256);
-  final blue = random.nextInt(256);
-  return Color.fromARGB(alfa, red, green, blue);
 }
 
 class MyApp extends StatelessWidget {
@@ -61,7 +54,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.indigoAccent,
         title: Text(widget.title),
       ),
       body: AnimatedBuilder(
@@ -114,12 +108,21 @@ class _MyHomePageState extends State<MyHomePage> {
               itemBuilder: (context, index) {
                 final sortedContatos = store.state.value!.contatos;
                 sortedContatos.sort((a, b) {
-                  return (a.nome ?? '').compareTo(b.nome ?? '');
+                  return (a.nome?.toLowerCase() ?? '')
+                      .compareTo(b.nome?.toLowerCase() ?? '');
                 });
                 final item = sortedContatos[index];
                 final cores = item.cor;
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    final id = item.objectId;
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetalhesContatos(
+                                  id: '$id',
+                                )));
+                  },
                   child: Card(
                       margin: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
@@ -168,8 +171,14 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(FontAwesomeIcons.plus),
+        backgroundColor: Colors.indigoAccent,
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AdicionarContato()));
+        },
+        child: const Icon(FontAwesomeIcons.plus, color: Colors.white),
       ),
     );
   }
