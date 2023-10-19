@@ -78,7 +78,6 @@ class _AdicionarContatoState extends State<AdicionarContato> {
                 'PathFoto': '',
                 'Cor': getRandomColor(),
               };
-              print(createContatoData);
               store.createContato(novoContatoData: createContatoData);
               Navigator.pushReplacement(
                 context,
