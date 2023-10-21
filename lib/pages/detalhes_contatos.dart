@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:lista_contatos/main.dart';
@@ -106,13 +108,16 @@ class _DetalhesContatosState extends State<DetalhesContatos> {
 
           if (store.erro.value.isNotEmpty) {
             return const Center(
-              child: Text(
-                textAlign: TextAlign.center,
-                'Não foi possível carregar as informações do contato',
-                style: TextStyle(
-                  color: Colors.indigoAccent,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  'Não foi possível carregar as informações do contato',
+                  style: TextStyle(
+                    color: Colors.indigoAccent,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                  ),
                 ),
               ),
             );
@@ -145,15 +150,31 @@ class _DetalhesContatosState extends State<DetalhesContatos> {
                             backgroundColor: Color.fromARGB(
                                 cores![0], cores[1], cores[2], cores[3]),
                             foregroundColor: Colors.black,
-                            child: contato[0].pathFoto == ''
-                                ? Text(
-                                    contato[0].nome![0],
-                                    style: const TextStyle(
-                                      fontSize: 80,
-                                    ),
-                                  )
-                                : const Icon(FontAwesomeIcons.user),
-                          )),
+                          child: contato[0].pathFoto != null &&
+                                  contato[0].pathFoto!.isNotEmpty
+                              ? File(contato[0].pathFoto!).existsSync()
+                                  ? ClipOval(
+                                      child: Image.file(
+                                        File(contato[0].pathFoto!),
+                                        width: 200,
+                                        height: 200,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : Text(
+                                      contato[0].nome![0],
+                                      style: const TextStyle(
+                                        fontSize: 80,
+                                      ),
+                                    )
+                              : Text(
+                                  contato[0].nome![0],
+                                  style: const TextStyle(
+                                    fontSize: 80,
+                                  ),
+                                ),
+                        ),
+                      ),
                       Text(
                         '${contato[0].nome}',
                         style: const TextStyle(

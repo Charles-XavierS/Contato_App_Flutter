@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:lista_contatos/models/contatos_model.dart';
 import 'package:lista_contatos/repositories/contatos_repository.dart';
@@ -29,7 +31,9 @@ class ContatoStore {
       erro.value = e.toString();
     }
 
-    isLoading.value = false;
+    Timer(const Duration(milliseconds: 600), () {
+      isLoading.value = false;
+    });
   }
 
   Future getById({required String id}) async {
@@ -48,7 +52,9 @@ class ContatoStore {
       erro.value = e.toString();
     }
 
-    isLoading.value = false;
+    Timer(const Duration(milliseconds: 600), () {
+      isLoading.value = false;
+    });
   }
 
   Future updateContato(
@@ -71,7 +77,9 @@ class ContatoStore {
       erro.value = e.toString();
     }
 
-    isLoading.value = false;
+    Timer(const Duration(milliseconds: 600), () {
+      isLoading.value = false;
+    });
   }
 
   Future createContato({required Map<String, dynamic> novoContatoData}) async {
@@ -90,7 +98,9 @@ class ContatoStore {
       erro.value = e.toString();
     }
 
-    isLoading.value = false;
+    Timer(const Duration(milliseconds: 600), () {
+      isLoading.value = false;
+    });
   }
 
   Future deleteContato({required String id}) async {
@@ -107,6 +117,8 @@ class ContatoStore {
       erro.value = e.toString();
     }
 
-    isLoading.value = false;
+    Timer(const Duration(milliseconds: 600), () {
+      isLoading.value = false;
+    });
   }
 }

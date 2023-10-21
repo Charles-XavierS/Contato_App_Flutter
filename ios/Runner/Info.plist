@@ -44,6 +44,11 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Para usar uma foto salva na galeria, o aplicativo precisa da permissão para acessar a galeria</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Para usar uma foto tirada da câmera, o aplicativo precisa da permissão para tirar a foto</string>
 	<true/>
 </dict>
 </plist>

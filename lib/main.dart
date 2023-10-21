@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:lista_contatos/http/http_client.dart';
@@ -48,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     store.getContatos();
+    setState(() {});
   }
 
   @override
@@ -66,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ]),
         builder: (context, child) {
           if (store.isLoading.value) {
+            
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -142,15 +146,35 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               child: CircleAvatar(
                                 backgroundColor: Colors.transparent,
-                                child: Text(
-                                  item.nome?.isNotEmpty == true
-                                      ? item.nome![0]
-                                      : '',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
+                                child: item.pathFoto != null &&
+                                        item.pathFoto!.isNotEmpty
+                                    ? File(item.pathFoto!).existsSync()
+                                        ? ClipOval(
+                                            child: Image.file(
+                                              File(item.pathFoto!),
+                                              width: 40,
+                                              height: 40,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        : Text(
+                                            item.nome?.isNotEmpty == true
+                                                ? item.nome![0]
+                                                : '',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                            ),
+                                          )
+                                    : Text(
+                                        item.nome?.isNotEmpty == true
+                                            ? item.nome![0]
+                                            : '',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
+                                      ),
                               ),
                             ),
                             title: Text(
