@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:image_picker/image_picker.dart';
 import 'package:lista_contatos/main.dart';
 import '../http/http_client.dart';
 import '../repositories/contatos_repository.dart';
 import '../store/contatos_store.dart';
 
 class AdicionarContato extends StatefulWidget {
-  const AdicionarContato({super.key});
+  const AdicionarContato({Key? key});
 
   @override
   State<AdicionarContato> createState() => _AdicionarContatoState();
@@ -36,6 +39,9 @@ class _AdicionarContatoState extends State<AdicionarContato> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController siteController = TextEditingController();
 
+  final imagePicker = ImagePicker();
+  XFile? photo;
+
   final ContatoStore store = ContatoStore(
     repository: ContatosRepository(
       client: HttpClient(),
@@ -47,11 +53,33 @@ class _AdicionarContatoState extends State<AdicionarContato> {
     super.initState();
   }
 
+  Future<void> pickImageFromGallery() async {
+    final selectedImage =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (selectedImage != null) {
+      setState(() {
+        photo = selectedImage;
+      });
+    }
+  }
+
+  Future<void> captureImage() async {
+    final capturedImage =
+        await imagePicker.pickImage(source: ImageSource.camera);
+
+    if (capturedImage != null) {
+      setState(() {
+        photo = capturedImage;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Editar contato'),
+        title: const Text('Adicionar contato'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -75,7 +103,7 @@ class _AdicionarContatoState extends State<AdicionarContato> {
                 },
                 'Email': emailController.text,
                 'Site': siteController.text,
-                'PathFoto': '',
+                'PathFoto': photo?.path ?? '',
                 'Cor': getRandomColor(),
               };
               store.createContato(novoContatoData: createContatoData);
@@ -126,12 +154,88 @@ class _AdicionarContatoState extends State<AdicionarContato> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             child: GestureDetector(
-                              onTap: () {},
-                              child: const CircleAvatar(
+                              onTap: () {
+                                showBottomSheet(
+                                  context: context,
+                                  builder: (_) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundColor: Colors.grey[200],
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.image,
+                                                  color: Colors.indigo,
+                                                ),
+                                              ),
+                                            ),
+                                            title: const Text(
+                                              'Escolher da Galeria',
+                                              style: TextStyle(fontSize: 15),
+                                            ),
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                              pickImageFromGallery();
+                                            },
+                                          ),
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundColor: Colors.grey[200],
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.camera_alt,
+                                                  color: Colors.indigo,
+                                                ),
+                                              ),
+                                            ),
+                                            title: const Text(
+                                              'Tirar Foto',
+                                              style: TextStyle(fontSize: 15),
+                                            ),
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                              captureImage();
+                                            },
+                                          ),
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundColor: Colors.grey[200],
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.delete,
+                                                  color: Colors.indigo,
+                                                ),
+                                              ),
+                                            ),
+                                            title: const Text(
+                                              'Remover Foto',
+                                              style: TextStyle(fontSize: 15),
+                                            ),
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                              setState(() {
+                                                photo = null;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: CircleAvatar(
                                 radius: 100,
+                                backgroundImage: photo != null
+                                    ? FileImage(File(photo!.path))
+                                    : null,
                                 backgroundColor: Colors.grey,
                                 foregroundColor: Colors.black,
-                                child: Icon(
+                                child: const Icon(
                                   Icons.add_a_photo,
                                   size: 80,
                                 ),
